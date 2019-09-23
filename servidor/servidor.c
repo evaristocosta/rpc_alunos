@@ -14,7 +14,8 @@ adicionaraluno_1_svc(dadosAluno *argp, struct svc_req *rqstp) {
 			return &result;
 		}
 	}
-	alunos[posicao] = *argp;
+	alunos[posicao].ra = argp->ra;
+	alunos[posicao].nota = argp->nota;
 	posicao++;
 
 	result = 1;
@@ -26,7 +27,7 @@ obternota_1_svc(int *argp, struct svc_req *rqstp) {
 	static double  result;
 
 	for (size_t i = 0; i < CAPACIDADE; i++)	{
-		if (alunos[i].ra == argp) {
+		if (alunos[i].ra == *argp) {
 			result = alunos[i].nota;
 			return &result;
 		} 
@@ -44,7 +45,7 @@ alterarnota_1_svc(dadosAluno *argp, struct svc_req *rqstp) {
 		if (alunos[i].ra == argp->ra) {
 			alunos[i].nota = argp->nota;
 			result = 1;
-			return &result
+			return &result;
 		}
 	}
 	

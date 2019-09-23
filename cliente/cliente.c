@@ -10,7 +10,11 @@ int main(int argc, char *argv[]) {
 		exit(1);
 	}
 
+    int *Iretorno;
+    double *Dretorno;
+
     int opcao;
+    dadosAluno aluno;
 
     do {
 		printf("Digite:\n");
@@ -24,10 +28,32 @@ int main(int argc, char *argv[]) {
 		printf("Opcao: ");
 		scanf("%d", &opcao);
 
+        if (opcao == 1 || opcao == 3) {
+            printf("Digite o RA: ");
+			scanf("%d", &(aluno.ra));
+			printf("Digite a nota: ");
+			scanf("%lf", &(aluno.nota));
+        } else if (opcao == 2) {
+            printf("Digite o RA: ");
+			scanf("%d", &(aluno.ra));
+        }
+        
         switch(opcao) {
             case 1:
+                Iretorno = adicionaraluno_1(&aluno, handle);
+                if(*Iretorno == 1) {
+                    printf("\n--------\nAdicao realizada com sucesso!\n\n");
+                } else {
+                    printf("\n--------\nEste aluno ja foi adicionado anteriormente.\n\n");
+                }
                 break;
             case 2:
+                Dretorno = obternota_1(&aluno.ra, handle);
+                if (*Dretorno == -1) {
+                    printf("\n--------\nAluno nao existe!\n\n");
+                } else {
+                    printf("\n--------\nNota do aluno: %f\n\n", Dretorno);
+                }
                 break;
             case 3:
                 break;
