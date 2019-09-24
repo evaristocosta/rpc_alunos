@@ -1,81 +1,103 @@
 #include <rpc/rpc.h>
 #include "lucasCosta.h"
 
+// estrutura de armazenamento
 static dadosAluno alunos[CAPACIDADE];
 int posicao = 0;
 
+// funcao de adicao
 int *
 adicionaraluno_1_svc(dadosAluno *argp, struct svc_req *rqstp) {
-	static int  result;
+	static int  resultado;
 
-	for (size_t i = 0; i < CAPACIDADE; i++) {
-		if (alunos[i].ra == argp->ra) {
-			result = 0;
-			return &result;
+	// posicao == 0 significa que ainda nao existem alunos
+	if(posicao != 0) {
+		// se aluno existe, nao adiciona
+		for (size_t i = 0; i < posicao; i++) {
+			if (alunos[i].ra == argp->ra) {
+				resultado = 0;
+				return &resultado;
+			}
 		}
 	}
+	// adicao do aluno por partes
 	alunos[posicao].ra = argp->ra;
 	alunos[posicao].nota = argp->nota;
+	// atualizacao da quantidade de alunos inseridos
 	posicao++;
 
-	result = 1;
-	return &result;
+	resultado = 1;
+	return &resultado;
 }
 
+// funcao de pesquisa
 double *
 obternota_1_svc(int *argp, struct svc_req *rqstp) {
-	static double  result;
+	static double  resultado;
 
-	for (size_t i = 0; i < CAPACIDADE; i++)	{
+	// procura na estrutura aluno com ra desejado
+	for (size_t i = 0; i < posicao; i++)	{
 		if (alunos[i].ra == *argp) {
-			result = alunos[i].nota;
-			return &result;
+			resultado = alunos[i].nota;
+			return &resultado;
 		} 
 	}
 	
-	result = -1;
-	return &result;
+	// no caso de nao encontrar,
+	resultado = -1;
+	return &resultado;
 }
 
+// funcao de edicao
 int *
 alterarnota_1_svc(dadosAluno *argp, struct svc_req *rqstp) {
-	static int  result;
+	static int  resultado;
 
-	for (size_t i = 0; i < CAPACIDADE; i++)	{
+	// procura aluno por ra
+	for (size_t i = 0; i < posicao; i++)	{
 		if (alunos[i].ra == argp->ra) {
+			// altera a nota, no caso de encontrar
 			alunos[i].nota = argp->nota;
-			result = 1;
-			return &result;
+			resultado = 1;
+			return &resultado;
 		}
 	}
 	
-	result = 0;
-	return &result;
+	resultado = 0;
+	return &resultado;
 }
 
+// funcao de contagem
 int *
 contaraprovados_1_svc(void *argp, struct svc_req *rqstp) {
-	static int  result;
-	result = 0;
-
-	for (size_t i = 0; i < CAPACIDADE; i++)	{
-		if (alunos[i].nota >= 6.0) {
-			result++;
-		}
-	}
-	
-	return &result;
-}
-
-double *
-mediadaturma_1_svc(void *argp, struct svc_req *rqstp) {
-	static double  result;
-	result = 0.0;
+	static int  resultado;
+	resultado = 0;
 
 	for (size_t i = 0; i < posicao; i++)	{
-		result += alunos[i].nota;
+		// considera-se aprovado aluno com nota maior que 60, nao 6
+		if (alunos[i].nota >= 60.0) {
+			resultado++;
+		}
 	}
-	result /= posicao;
+	return &resultado;
+}
 
-	return &result;
+// funcao de calculo de media
+double *
+mediadaturma_1_svc(void *argp, struct svc_req *rqstp) {
+	static double  resultado;
+	resultado = 0.0;
+
+	// para evitar divisao por zero, verifica antes se existem alunos na estrutura
+	if (posicao == 0) {
+		return &resultado;
+	}
+	
+	for (size_t i = 0; i < posicao; i++)	{
+		resultado += alunos[i].nota;
+	}
+	// faz a media
+	resultado /= posicao;
+
+	return &resultado;
 }

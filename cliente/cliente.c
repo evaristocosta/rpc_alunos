@@ -10,11 +10,13 @@ int main(int argc, char *argv[]) {
 		exit(1);
 	}
 
+    // variaveis de retorno
     int *Iretorno;
     double *Dretorno;
 
-    int opcao;
+    // entrutura de envio
     dadosAluno aluno;
+    int opcao;
 
     do {
 		printf("Digite:\n");
@@ -28,14 +30,14 @@ int main(int argc, char *argv[]) {
 		printf("Opcao: ");
 		scanf("%d", &opcao);
 
-        if (opcao == 1 || opcao == 3) {
+        // casos que precisam do ra
+        if (opcao == 1 || opcao == 2 || opcao == 3) {
             printf("Digite o RA: ");
 			scanf("%d", &(aluno.ra));
-			printf("Digite a nota: ");
+        } // casos que precisam de nota
+        if(opcao == 1 || opcao == 3) {
+            printf("Digite a nota: ");
 			scanf("%lf", &(aluno.nota));
-        } else if (opcao == 2) {
-            printf("Digite o RA: ");
-			scanf("%d", &(aluno.ra));
         }
         
         switch(opcao) {
@@ -52,14 +54,27 @@ int main(int argc, char *argv[]) {
                 if (*Dretorno == -1) {
                     printf("\n--------\nAluno nao existe!\n\n");
                 } else {
-                    printf("\n--------\nNota do aluno: %f\n\n", Dretorno);
+                    printf("\n--------\nNota do aluno: %lf\n\n", *Dretorno);
                 }
                 break;
             case 3:
+                Iretorno = alterarnota_1(&aluno, handle);
+                if(*Iretorno == 1) {
+                    printf("\n--------\nNota alterada com sucesso!\n\n");
+                } else {
+                    printf("\n--------\nAluno nao encontrado!\n\n");
+                }
                 break;
             case 4:
+                Iretorno = contaraprovados_1(&aluno, handle);
+                printf("\n--------\nTotal de aprovados: %d\n\n", *Iretorno);
                 break;
             case 5:
+                Dretorno = mediadaturma_1(&aluno, handle);
+                printf("\n--------\nMedia da turma: %lf\n\n", *Dretorno);
+                break;
+            case 9:
+                printf("Saindo...\n\n");
                 break;
             default:
 				printf("Errou... Digite operação valida\n\n");
