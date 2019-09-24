@@ -74,8 +74,8 @@ contaraprovados_1_svc(void *argp, struct svc_req *rqstp) {
 	resultado = 0;
 
 	for (size_t i = 0; i < posicao; i++)	{
-		// considera-se aprovado aluno com nota maior que 60, nao 6
-		if (alunos[i].nota >= 60.0) {
+		// considera-se aprovado aluno com nota maior que 6
+		if (alunos[i].nota >= 6.0) {
 			resultado++;
 		}
 	}
